@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPSC TRE - Biology Mock Test 01</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #0b5ed7;
+            --bg-color: #f4f7fe;
+            --card-bg: #ffffff;
+            --text-main: #2b3674;
+            --text-sub: #a3edcc;
+            --success: #198754;
+            --success-bg: #d1e7dd;
+            --danger: #dc3545;
+            --danger-bg: #f8d7da;
+            --warning-bg: #fff3cd;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 850px;
+        }
+
+        /* Header Card */
+        .header-card {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .header-card h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+        }
+
+        .header-card p {
+            margin: 0;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* Score Tracker Sticky Bar */
+        .score-tracker {
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .badge-success { background: var(--success-bg); color: var(--success); }
+        .badge-danger { background: var(--danger-bg); color: var(--danger); }
+        .badge-score { background: #e0f2fe; color: #0369a1; }
+
+        .btn-reset {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-reset:hover { background: #dc2626; }
+
+        /* Question Cards */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        .q-header {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #334155;
+            width: 100%;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary-color);
+            background: #edf2f7;
+        }
+
+        /* Option Feedback States */
+        .option-btn.correct {
+            background-color: var(--success-bg) !important;
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--danger-bg) !important;
+            border-color: var(--danger) !important;
+            color: var(--danger) !important;
+        }
+
+        /* Analysis Box */
+        .analysis-box {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+            font-size: 0.9rem;
+        }
+
+        .analysis-box h4 {
+            margin: 0 0 8px 0;
+            color: #0369a1;
+        }
+
+        .analysis-box ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .analysis-box li {
+            margin-bottom: 5px;
+            color: #334155;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <!-- Header -->
+    <div class="header-card">
+        <h1>BPSC TRE - Biology Mock Test 01</h1>
+        <p>सही उत्तर: <b>+1</b> | गलत उत्तर: <b>-0.33 (Negative Marking)</b></p>
+    </div>
+
+    <!-- Live Score Tracker -->
+    <div class="score-tracker">
+        <div>
+            <span class="badge badge-success" id="correct-count">सही: 0</span>
+            <span class="badge badge-danger" id="wrong-count">गलत: 0</span>
+        </div>
+        <div>
+            <span class="badge badge-score" id="total-score">अंक: 0.00 / 20</span>
+        </div>
+        <button class="btn-reset" onclick="resetQuiz()">रीसेट करें</button>
+    </div>
+
+    <!-- Questions Box -->
+    <div id="quiz-container"></div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "पौधों में प्रकाश-संश्लेषण (Photosynthesis) की प्रक्रिया के दौरान कौन-सी गैस मुख्य उत्पाद (Bi-product) के रूप में निकलती है?",
+        options: ["(A) कार्बन डाइऑक्साइड", "(B) नाइट्रोजन", "(C) ऑक्सीजन", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 2,
+        analysis: [
+            "प्रकाश-संश्लेषण के दौरान ऑक्सीजन गैस जल (H₂O) के जल-अपघटन (Photolysis of water) से निकलती है, न कि CO₂ से।",
+            "प्रकाश-संश्लेषण के लिए चार प्रमुख घटक आवश्यक हैं: सूर्य का प्रकाश, क्लोरोफिल, जल (H₂O), और कार्बन डाइऑक्साइड (CO₂)।",
+            "पौधों की पत्तियों में मौजूद हरे रंग के वर्णक को क्लोरोफिल (Chlorophyll) कहते हैं, जिसके केंद्र में मैग्नीशियम (Mg) धातु पाई जाती है।",
+            "प्रकाश-संश्लेषण की प्रकाश-निर्भर अभिक्रिया थाइलेकोइड में तथा अप्रकाशिक अभिक्रिया स्ट्रोमा में होती है।",
+            "यह प्रक्रिया पौधों में भोजन बनाने के साथ-साथ पर्यावरण में ऑक्सीजन का संतुलन बनाए रखने के लिए अनिवार्य है।"
+        ]
+    },
+    {
+        q: "मानव पाचन तंत्र में भोजन का पूर्ण पाचन तथा अवशोषण कहाँ होता है?",
+        options: ["(A) अमाशय (Stomach)", "(B) छोटी आँत (Small Intestine)", "(C) बड़ी आँत (Large Intestine)", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 1,
+        analysis: [
+            "छोटी आँत मानव आहारनाल का सबसे लंबा भाग (लगभग 6 से 7 मीटर) होती है।",
+            "कार्बोहाइड्रेट, प्रोटीन और वसा का पूर्ण पाचन छोटी आँत के ड्युओडेनम और इलियम वाले हिस्से में होता है।",
+            "पचे हुए भोजन के अवशोषण के लिए छोटी आँत की आंतरिक भित्ति पर विली (Villi) नामक संरचनाएँ होती हैं।",
+            "यकृत (Liver) से निकलने वाला पित्त रस (Bile juice) छोटी आँत में पहुँचकर वसा का इमल्सीकरण करता है।",
+            "बड़ी आँत का मुख्य कार्य जल और कुछ लवणों का अवशोषण करना तथा अपचित भोजन को उत्सर्जित करना है।"
+        ]
+    },
+    {
+        q: "मानव हृदय में कुल कितने कोष्ठक (Chambers) होते हैं?",
+        options: ["(A) 2", "(B) 3", "(C) 4", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 2,
+        analysis: [
+            "मानव हृदय चार कोष्ठकों में विभाजित होता है: दो ऊपरी कोष्ठक (अलिंद) और दो निचले कोष्ठक (निलय)।",
+            "दायाँ भाग अशुद्ध रक्त और बायाँ भाग शुद्ध (ऑक्सीजनित) रक्त प्राप्त एवं पम्प करता है।",
+            "पक्षियों और स्तनधारियों में 4-कोष्ठकीय हृदय होता है, जबकि उभयचरों और सरीसृपों में सामान्यतः 3-कोष्ठकीय हृदय होता है।",
+            "मछलियों के हृदय में केवल 2 कोष्ठक (एक अलिंद और एक निलय) होते हैं।",
+            "हृदय के संकुचन को सिस्टोल और शिथिलन को डायस्टोल कहा जाता है। सामान्य रक्तचाप 120/80 mmHg होता है।"
+        ]
+    },
+    {
+        q: "पौधों में जल और खनिज लवणों के संवहन के लिए कौन-सा ऊतक उत्तरदायी है?",
+        options: ["(A) फ्लोएम (Phloem)", "(B) जाइलम (Xylem)", "(C) पैरेंकाइमा (Parenchyma)", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 1,
+        analysis: [
+            "जाइलम (Xylem) जड़ों से पत्तियों तक जल और खनिज लवणों का एकदिशीय परिवहन करता है।",
+            "फ्लोएम (Phloem) पत्तियों द्वारा निर्मित भोजन को पौधे के विभिन्न भागों तक द्विदिशीय रूप से पहुँचाता है।",
+            "जाइलम मुख्य रूप से मृत कोशिकाओं का बना होता है, जबकि फ्लोएम जीवित कोशिकाओं से बना होता है।",
+            "वाष्पोत्सर्जन (Transpiration) की प्रक्रिया जाइलम के माध्यम से जल को ऊपर खींचने में मदद करती है।",
+            "पौधों की आयु की गणना जाइलम के वार्षिक वलयों (Annual rings) को गिनकर की जाती है।"
+        ]
+    },
+    {
+        q: "वृक्क (Kidney) की कार्यात्मक और संरचनात्मक इकाई क्या कहलाती है?",
+        options: ["(A) न्यूरॉन (Neuron)", "(B) नेफ्रॉन (Nephron)", "(C) एल्विओलाई (Alveoli)", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 1,
+        analysis: [
+            "प्रत्येक वृक्क में लगभग 10 से 12 लाख सूक्ष्म नलिकाएँ होती हैं, जिन्हें नेफ्रॉन (Nephron) कहते हैं।",
+            "नेफ्रॉन का मुख्य कार्य रक्त को छानना (Filtration) और मूत्र का निर्माण करना है।",
+            "बोमन सम्पुट और ग्लोमेरुलस नेफ्रॉन के मुख्य भाग हैं जो अल्ट्राफिल्ट्रेशन में भाग लेते हैं।",
+            "मानव शरीर में मुख्य उत्सर्जी पदार्थ यूरिया है, जिसका निर्माण यकृत (Liver) में होता है।",
+            "कृत्रिम रूप से रक्त साफ करने की प्रक्रिया को डायलिसिस (Dialysis) कहते हैं।"
+        ]
+    },
+    {
+        q: "तंत्रिका तंत्र (Nervous System) की मूल इकाई क्या है?",
+        options: ["(A) नेफ्रॉन", "(B) न्यूरॉन (Neuron)", "(C) एग्जॉन", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 1,
+        analysis: [
+            "न्यूरॉन मानव शरीर की सबसे लंबी कोशिका (Longest cell) होती है।",
+            "न्यूरॉन के तीन मुख्य भाग होते हैं: साइटॉन, डेंड्राइट, और एग्जॉन।",
+            "दो न्यूरॉनों के बीच के संधि स्थल को सिनैप्स (Synapse) कहा जाता है।",
+            "तंत्रिका आवेग electro-chemical (विद्युत-रासायनिक) रूप में संचरित होते हैं।",
+            "मेडुला ऑब्लांगेटा अनैच्छिक क्रियाओं जैसे- हृदय की धड़कन, श्वसन और रक्तचाप को नियंत्रित करता है।"
+        ]
+    },
+    {
+        q: "मानव शरीर में इंसुलिन (Insulin) हार्मोन का स्रावण किस ग्रंथि द्वारा होता है?",
+        options: ["(A) पीयूष ग्रंथि (Pituitary Gland)", "(B) थायराइड ग्रंथि (Thyroid Gland)", "(C) अग्न्याशय (Pancreas)", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 2,
+        analysis: [
+            "इंसुलिन अग्न्याशय की लैंगरहैंस की द्वीपिकाओं की बीटा-कोशिकाओं से स्रावित होता है।",
+            "इंसुलिन का मुख्य कार्य रक्त में ग्लूकोज के स्तर को नियंत्रित करना है।",
+            "इंसुलिन की कमी से मधुमेह (Diabetes Mellitus) नामक रोग हो जाता है।",
+            "अग्न्याशय एक मिश्रित ग्रंथि (Mixed Gland) है।",
+            "इंसुलिन ग्लूकोज को ग्लाइकोजन में परिवर्तित करके यकृत और पेशियों में संचित करता है।"
+        ]
+    },
+    {
+        q: "अनुवांशिकी का जनक (Father of Genetics) किसे कहा जाता है?",
+        options: ["(A) चार्ल्स डार्विन", "(B) ग्रेगर जॉन मेंडल", "(C) लामार्क", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 1,
+        analysis: [
+            "मेंडल ने अनुवांशिकता के नियमों की खोज के लिए मटर के पौधे (Pisum sativum) का उपयोग किया।",
+            "प्रयोग के लिए मटर के पौधे के 7 जोड़ी विपर्यासी लक्षणों का चयन किया गया था।",
+            "मेंडल ने तीन नियम दिए: प्रभाविता, पृथक्करण, और स्वतंत्र अपव्यूहन।",
+            "एकसंकर संकरण में लक्षण प्रारूप (Phenotype ratio) 3:1 होता है।",
+            "जीन (Gene) अनुवांशिकता की मूलभूत इकाई है, जिसे मेंडल ने 'कारक' (Factor) कहा था।"
+        ]
+    },
+    {
+        q: "मनुष्य के कायिक कोशिका (Somatic cell) में गुणसूत्रों (Chromosomes) की संख्या कितनी होती है?",
+        options: ["(A) 23", "(B) 44", "(C) 46", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 2,
+        analysis: [
+            "मनुष्य में कुल 46 गुणसूत्र होते हैं, जो 23 जोड़ों में पाए जाते हैं।",
+            "22 जोड़े (44 गुणसूत्र) ऑटोसोम (Autosomes) कहलाते हैं।",
+            "23वाँ जोड़ा लिंग गुणसूत्र (Sex chromosome) कहलाता है।",
+            "बच्चे के लिंग का निर्धारण पिता के शुक्राणु के गुणसूत्र (X या Y) द्वारा होता है।",
+            "गुणसूत्र मुख्य रूप से DNA और हिस्टोन प्रोटीन से मिलकर बने होते हैं।"
+        ]
+    },
+    {
+        q: "वायवीय श्वसन की प्रक्रिया में ग्लूकोज के एक अणु के पूर्ण ऑक्सीकरण से कुल कितने ATP बनते हैं?",
+        options: ["(A) 2 ATP", "(B) 36 ATP", "(C) 38 ATP", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 2,
+        analysis: [
+            "वायवीय श्वसन ऑक्सीजन की उपस्थिति में संपन्न होता है।",
+            "प्रथम चरण ग्लाइकोलिसिस कोशिकाद्रव्य (Cytoplasm) में होता है।",
+            "ग्लाइकोलिसिस प्रक्रिया के अंत में शुद्ध 2 ATP का लाभ होता है।",
+            "क्रेब्स चक्र माइटोकॉन्ड्रिया में संपन्न होता है, जहाँ अधिकांश ATP बनता है।",
+            "अवायवीय श्वसन में केवल 2 ATP अणु बनते हैं।"
+        ]
+    },
+    {
+        q: "पत्तियों में गैसों का आदान-प्रदान और वाष्पोत्सर्जन किसके द्वारा होता है?",
+        options: ["(A) सिरा (Vein)", "(B) रंध्र (Stomata)", "(C) मध्यसिरा (Midrib)", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 1,
+        analysis: [
+            "रंध्र (Stomata) पत्तियों की सतह पर पाए जाने वाले सूक्ष्म छिद्र होते हैं।",
+            "प्रत्येक रंध्र द्वार कोशिकाओं (Guard cells) से घिरा होता है।",
+            "प्रकाश-संश्लेषण के लिए CO₂ का ग्रहण और O₂ का निकास रंध्रों से होता है।",
+            "द्वार कोशिकाएं रंध्रों के खुलने और बंद होने को नियंत्रित करती हैं।",
+            "वाष्पोत्सर्जन की दर मापने के लिए गैनॉन्ग पोटोमीटर का उपयोग किया जाता है।"
+        ]
+    },
+    {
+        q: "थाइरॉक्सिन (Thyroxin) हार्मोन के संश्लेषण के लिए कौन-सा तत्व अनिवार्य है?",
+        options: ["(A) लोहा (Iron)", "(B) कैल्शियम (Calcium)", "(C) आयोडीन (Iodine)", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 2,
+        analysis: [
+            "थाइरॉक्सिन हार्मोन थाइराइड ग्रंथि द्वारा स्रावित होता है।",
+            "आयोडीन की कमी से घेंघा रोग (Goitre) हो जाता है।",
+            "यह हार्मोन शरीर में उपपचय (Metabolism) का नियंत्रण करता है।",
+            "बच्चों में इसकी कमी से जड़मानवता (Cretinism) होती है।",
+            "थाइराइड ग्रंथि मानव शरीर की सबसे बड़ी अंतःस्रावी ग्रंथि है।"
+        ]
+    },
+    {
+        q: "मुकुलन (Budding) द्वारा अलैंगिक जनन निम्नलिखित में से किस जीव में होता है?",
+        options: ["(A) अमीबा", "(B) ईस्ट (Yeast) तथा हाइड्रा", "(C) प्लाज्मोडियम", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 1,
+        analysis: [
+            "मुकुलन में जनक जीव के शरीर पर मुकुल (Bud) बनता है।",
+            "ईस्ट एक एककोशिकीय कवक है जो किण्वन में प्रयुक्त होता है।",
+            "अमीबा में अलैंगिक जनन द्विखंडन (Binary fission) द्वारा होता है।",
+            "प्लाज्मोडियम में बहुखंडन (Multiple fission) होता है।",
+            "प्लेनेरिया और हाइड्रा में पुनरुद्भवन की क्षमता होती है।"
+        ]
+    },
+    {
+        q: "पुरुषों में शुक्राणु (Sperm) का निर्माण कहाँ होता है?",
+        options: ["(A) शुक्राशय", "(B) प्रोस्टेट ग्रंथि", "(C) वृषण (Testes)", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 2,
+        analysis: [
+            "वृषण (Testes) उदर गुहा के बाहर वृषण कोष में स्थित होते हैं।",
+            "शुक्राणु उत्पादन के लिए शरीर से 2 से 2.5°C कम तापमान चाहिए।",
+            "पुरुषों का मुख्य लिंग हार्मोन टेस्टोस्टेरोन है।",
+            "शुक्राणु अत्यधिक सूक्ष्म और गतिशील कोशिकाएँ हैं।",
+            "पुरुष नसबंदी को वेसेक्टॉमी (Vasectomy) कहा जाता है।"
+        ]
+    },
+    {
+        q: "मादा में निषेचन (Fertilization) की क्रिया कहाँ संपन्न होती है?",
+        options: ["(A) गर्भाशय (Uterus)", "(B) अंडाशय (Ovary)", "(C) फेलोपियन नलिका (Fallopian Tube)", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 2,
+        analysis: [
+            "फेलोपियन नलिका में शुक्राणु और अंडाणु का संलयन होता है।",
+            "अंडाशय में परिपक्व अंडाणु का निर्माण होता है।",
+            "मादा जनन हार्मोन एस्ट्रोजन और प्रोजेस्टेरोन हैं।",
+            "निषेचित अंडाणु गर्भाशय में रोपित (Implanted) होता है।",
+            "महिला नसबंदी को ट्यूबेक्टॉमी (Tubectomy) कहते हैं।"
+        ]
+    },
+    {
+        q: "किसी पारिस्थितिक तंत्र (Ecosystem) में ऊर्जा का प्राथमिक स्रोत क्या है?",
+        options: ["(A) हरी वनस्पतियाँ", "(B) सूर्य का प्रकाश", "(C) शाकाहारी जीव", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 1,
+        analysis: [
+            "सभी पारिस्थितिक तंत्रों के लिए ऊर्जा का मुख्य स्रोत सूर्य का प्रकाश है।",
+            "उत्पादक सौर ऊर्जा को रासायनिक ऊर्जा में बदलते हैं।",
+            "10% नियम के अनुसार केवल 10% ऊर्जा अगले स्तर पर जाती है।",
+            "शेष 90% ऊर्जा ऊष्मा के रूप में नष्ट हो जाती है।",
+            "ऊर्जा का प्रवाह सदैव एकदिशीय (Unidirectional) होता है।"
+        ]
+    },
+    {
+        q: "ओजोन परत (Ozone Layer) वायुमंडल के किस भाग में पाई जाती है?",
+        options: ["(A) क्षोभमंडल", "(B) समतापमंडल", "(C) मध्यमंडल", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 1,
+        analysis: [
+            "ओजोन परत समतापमंडल (Stratosphere) में पाई जाती है।",
+            "यह पराबैंगनी (UV) विकिरण से सुरक्षा प्रदान करती है।",
+            "ओजोन का रासायनिक सूत्र O₃ है।",
+            "ओजोन परत की मोटाई को डॉबसन इकाई (DU) में मापा जाता है।",
+            "16 सितंबर को विश्व ओजोन दिवस मनाया जाता है।"
+        ]
+    },
+    {
+        q: "मस्तिष्क का कौन-सा भाग शरीर का संतुलन (Posture and Balance) बनाए रखने के लिए उत्तरदायी है?",
+        options: ["(A) सेरेब्रम (Cerebrum)", "(B) सेरेबेलम (Cerebellum)", "(C) हाइपोथैलेमस", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 1,
+        analysis: [
+            "सेरेबेलम (अनुमस्तिष्क) शारीरिक संतुलन को नियंत्रित करता है।",
+            "सेरेब्रम मस्तिष्क का सबसे बड़ा भाग है (स्मरण शक्ति और सोच का केंद्र)।",
+            "हाइपोथैलेमस तापमान, भूख और प्यास का नियंत्रण करता है।",
+            "शराब से सेरेबेलम प्रभावित होता है जिससे संतुलन बिगड़ता है।",
+            "मेरुदंड प्रतिवर्ती क्रियाओं (Reflex Actions) का संचालन करता है।"
+        ]
+    },
+    {
+        q: "निम्नलिखित में से कौन-सा हार्मोन पौधों में वृद्धि रोधक (Growth Inhibitor) है?",
+        options: ["(A) ऑक्सिन (Auxin)", "(B) जिबरेलिन (Gibberellin)", "(C) एब्सिसिक अम्ल (Abscisic Acid)", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 2,
+        analysis: [
+            "एब्सिसिक अम्ल (ABA) वृद्धि को रोकने का कार्य करता है।",
+            "ऑक्सिन कोशिकाओं की लंबाई में वृद्धि करता है।",
+            "जिबरेलिन तने की लंबाई बढ़ाने में सहायक है।",
+            "साइटोकाइनिन कोशिका विभाजन को बढ़ावा देता है।",
+            "एथिलीन गैसीय अवस्था में फलों को पकाता है।"
+        ]
+    },
+    {
+        q: "मानव रक्त में ऑक्सीजन का संवहन करने वाला वर्णक (Pigment) कौन-सा है?",
+        options: ["(A) क्लोरोफिल", "(B) हीमोग्लोबिन (Hemoglobin)", "(C) मायोग्लोबिन", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 1,
+        analysis: [
+            "हीमोग्लोबिन लाल रक्त कोशिकाओं (RBCs) में पाया जाने वाला लौह-युक्त प्रोटीन है।",
+            "यह ऑक्सीजन के 4 अणुओं से जुड़कर ऑक्सीहीमोग्लोबिन बनाता है।",
+            "RBC का जीवनकाल 120 दिन होता है।",
+            "प्लीहा (Spleen) को RBC का कब्रगाह कहा जाता है।",
+            "इसकी कमी से एनीमिया (Anemia) रोग होता है।"
+        ]
+    }
+];
+
+let correctAnswers = 0;
+let wrongAnswers = 0;
+
+function renderQuiz() {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
+
+    quizData.forEach((qData, qIndex) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+
+        let optionsHTML = '';
+        qData.options.forEach((opt, optIndex) => {
+            optionsHTML += `
+                <button class="option-btn" id="opt-${qIndex}-${optIndex}" onclick="checkAnswer(${qIndex}, ${optIndex})">
+                    ${opt}
+                </button>
+            `;
+        });
+
+        let analysisHTML = qData.analysis.map(item => `<li>${item}</li>`).join('');
+
+        card.innerHTML = `
+            <div class="q-header">प्रश्न ${qIndex + 1}: ${qData.q}</div>
+            <div class="options-grid" id="options-group-${qIndex}">
+                ${optionsHTML}
+            </div>
+            <div class="analysis-box" id="analysis-${qIndex}">
+                <h4>विश्लेषण (Key Points):</h4>
+                <ul>${analysisHTML}</ul>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function checkAnswer(qIndex, selectedOpt) {
+    const qData = quizData[qIndex];
+    const optionsGroup = document.getElementById(`options-group-${qIndex}`);
+    const buttons = optionsGroup.querySelectorAll('.option-btn');
+
+    // Disable all buttons in this question group
+    buttons.forEach(btn => btn.disabled = true);
+
+    if (selectedOpt === qData.ans) {
+        document.getElementById(`opt-${qIndex}-${selectedOpt}`).classList.add('correct');
+        correctAnswers++;
+    } else {
+        document.getElementById(`opt-${qIndex}-${selectedOpt}`).classList.add('incorrect');
+        document.getElementById(`opt-${qIndex}-${qData.ans}`).classList.add('correct');
+        wrongAnswers++;
+    }
+
+    // Display Analysis Box
+    document.getElementById(`analysis-${qIndex}`).style.display = 'block';
+
+    // Update Score Board
+    updateScore();
+}
+
+function updateScore() {
+    const totalScore = (correctAnswers * 1) - (wrongAnswers * (1/3));
+    document.getElementById('correct-count').innerText = `सही: ${correctAnswers}`;
+    document.getElementById('wrong-count').innerText = `गलत: ${wrongAnswers}`;
+    document.getElementById('total-score').innerText = `अंक: ${totalScore.toFixed(2)} / 20`;
+}
+
+function resetQuiz() {
+    correctAnswers = 0;
+    wrongAnswers = 0;
+    updateScore();
+    renderQuiz();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.onload = renderQuiz;
+</script>
+
+</body>
+</html>
